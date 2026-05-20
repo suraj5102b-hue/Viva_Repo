@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HCL Interface</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #f4f6f8;
+      color: #1f2933;
+    }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-rows: 60px 1fr;
+      grid-template-columns: 240px 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      height: 100vh;
+    }
+
+    header {
+      grid-area: header;
+      background: #0043a8;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    header .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #00a0ff, #0043a8);
+    }
+
+    header .user {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    aside {
+      grid-area: sidebar;
+      background: #0b1f3b;
+      color: #d9e2ec;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9fb3c8;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      margin-bottom: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #d9e2ec;
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .nav-link span.icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      background: #102a43;
+      color: #ffffff;
+    }
+
+    main {
+      grid-area: main;
+      padding: 20px 24px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 18px;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 0.9rem;
+      color: #52606d;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.4fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.12);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e3f8ff;
+      color: #035388;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 16px;
+      margin-top: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #52606d;
+    }
+
+    input,
+    select,
+    textarea {
+      border-radius: 6px;
+      border: 1px solid #cbd2d9;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease;
+      background: #ffffff;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2680c2;
+      box-shadow: 0 0 0 1px rgba(38,128,194,0.25);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn-primary {
+      background: #0043a8;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #00348a;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #52606d;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Right card */
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      color: #52606d;
+    }
+
+    .metric-value {
+      font-weight: 600;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f0f4f8;
+      color: #52606d;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto auto;
+        grid-template-areas:
+          "header"
+          "sidebar"
+          "main";
+      }
+
+      aside {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <span>HCL Portal</span>
+      </div>
+      <div class="user">
+        Signed in as: <strong>jane.doe@hcl.com</strong>
+      </div>
+    </header>
+
+    <aside>
+      <div>
+        <div class="nav-section-title">Main</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <span class="icon"></span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="icon"></span>
+              <span>Projects</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="icon"></span>
+              <span>Tickets</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-section-title">Admin</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="icon"></span>
+              <span>Users</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="icon"></span>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main>
+      <div class="page-header">
+        <div class="page-title">Service Request Interface</div>
+        <div class="page-subtitle">
+          Capture and track HCL service requests in a structured way.
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <!-- Left: Form -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">New Request</div>
+            <span class="badge">Live</span>
+          </div>
+
+          <form>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="requestId">Request ID</label>
+                <input id="requestId" type="text" placeholder="AUTO-GENERATED" disabled />
+              </div>
+
+              <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority">
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Critical</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="requester">Requester</label>
+                <input id="requester" type="text" placeholder="Enter requester name" />
+              </div>
+
+              <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department">
+                  <option>IT</option>
+                  <option>HR</option>
+                  <option>Finance</option>
+                  <option>Operations</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label for="subject">Subject</label>
+                <input id="subject" type="text" placeholder="Short summary of the issue" />
+              </div>
+
+              <div class="form-group full">
+                <label for="description">Description</label>
+                <textarea id="description" placeholder="Describe the issue or request in detail"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="dueDate">Due date</label>
+                <input id="dueDate" type="date" />
+              </div>
+
+              <div class="form-group">
+                <label for="assignee">Assignee</label>
+                <input id="assignee" type="text" placeholder="Owner of this request" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="button" class="btn btn-ghost">Cancel</button>
+              <button type="submit" class="btn btn-primary">Create Request</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Right: Summary / Metrics -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Request Overview</div>
+          </div>
+
+          <div class="metric-row">
+            <span class="metric-label">Open requests</span>
+            <span class="metric-value">27</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">High priority</span>
+            <span class="metric-value">5</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Avg. resolution time</span>
+            <span class="metric-value">3.2 days</span>
+          </div>
+
+          <h4 style="margin-top:16px; font-size:0.9rem; color:#52606d;">Common tags</h4>
+          <div class="pill-row">
+            <span class="pill">Access</span>
+            <span class="pill">Network</span>
+            <span class="pill">Onboarding</span>
+            <span class="pill">Payroll</span>
+            <span class="pill">Hardware</span>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
